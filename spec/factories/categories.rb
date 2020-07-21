@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :category do
-    name { "MyString" }
-    todos_amount { 1 }
+    name { FFaker::Hipster.sentence(3) }
   end
 end
