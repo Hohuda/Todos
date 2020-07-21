@@ -30,7 +30,14 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Rspec
   gem 'rspec-rails', '~>4.0.1'
-  
+  # Capybara
+  gem 'capybara'
+  # Factory Bot
+  gem 'factory_bot_rails'
+  # Shoulda matchers oneliners
+  gem 'shoulda-matchers'
+  # Database cleaner
+  gem 'database_cleaner-active_record'
 end
 
 group :development do
