@@ -2,53 +2,36 @@ import React from "react";
 import CategoryItem from "../CategoryItem/CategoryItem";
 import { Grid } from "@material-ui/core";
 
-const api_url = `http://localhost:3001/`;
+const origin = "localhost:3001";
 
 class CategoryList extends React.Component {
-  // constructor(props){
-  //   super(props);
-  //   this.state = {
-  //     isLoaded = false,
-  //     categories = []
-  //   };
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoaded: false,
+      categories: [],
+    };
+  }
 
-  // componentDidMount(){
-  //   fetch(api_url)
-  //   .then(response => response.json)
-  //   .then(result => {
-  //     this.state = {
-  //       isLoaded = true,
-  //       categories = result
-  //     }
-  //   })
-  // }
+  getCategoriesRecordsApi() {
+    const api_url = `http://${origin}/`;
 
-  // render(){
-  //   const categories = this.state.categories
-  //   const categoriesItems = categories.map((category) => {
-  //     <li>
-  //       <CategoryItem key={category.id} category={category}/>
-  //     </li>
-  //   })
+    fetch(api_url)
+      .then((response) => response.json())
+      .then((result) => {
+        this.setState({
+          isLoaded: true,
+          categories: result.categories,
+        });
+      });
+  }
 
-  //   return(
-  //     <div>
-  //       <ul>
-  //         {categoriesItems}
-  //       </ul>
-  //     </div>
-  //   )
-  // }
+  componentDidMount() {
+    this.getCategoriesRecordsApi();
+  }
 
   render() {
-    const categories = [
-      { id: 1, name: "first" },
-      { id: 2, name: "second" },
-      { id: 3, name: "third" },
-      { id: 4, name: "fourth" },
-      { id: 5, name: "fifth" },
-    ];
+    const categories = this.state.categories;
     const categoryItems = categories.map((category) => (
       <Grid item xs={4} key={category.id}>
         <CategoryItem category={category} />

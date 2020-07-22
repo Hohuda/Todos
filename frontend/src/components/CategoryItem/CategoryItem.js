@@ -40,7 +40,7 @@ class CategoryItem extends React.Component {
             }
           ></CardHeader>
           <CardContent>
-            <TodoList />
+            <TodoList todos={category.todos} />
           </CardContent>
         </Card>
       </div>
