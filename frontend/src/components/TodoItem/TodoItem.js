@@ -39,17 +39,34 @@ class TodoItem extends React.Component {
     this.updateTodoRecordApi();
   }
 
-  updateTodoRecordApi() {
+  async updateTodoRecordApi() {
     const category_id = this.state.category_id;
     const todo_id = this.state.id;
     const patch_api_url = `http://${origin}/api/v1/categories/${category_id}/todos/${todo_id}`;
-    const data = { todo: this.state };
+    const state = this.state;
+    const data = {
+      todo: {
+        title: state.title,
+        description: state.description,
+        done: !this.state.done,
+      },
+    };
 
-    fetch(patch_api_url, {
-      method: "PUT",
+    await fetch(patch_api_url, {
+      method: "PATCH",
       mode: "cors",
-      body: data,
-    });
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((result) => this.updateItem(result));
+  }
+
+  updateItem(todo) {
+    this.setState((state) => todo);
   }
 
   render() {
@@ -61,9 +78,10 @@ class TodoItem extends React.Component {
         <Acordion square={true}>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <FormControlLabel
+              // onClick={(e) => this.handleFormClick(e)}
               onClick={(e) => this.handleFormClick(e)}
               // onFocus={(event) => event.stopPropagation()}
-              control={<Checkbox checked={done} />}
+              control={<Checkbox checked={this.state.done} />}
               label={<Typography variant="subtitle1">{todo.title}</Typography>}
             />
           </AccordionSummary>
