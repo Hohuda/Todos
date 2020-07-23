@@ -1,0 +1,2 @@
+frontend: PORT=3000 yarn --cwd frontend start
+backend: PORT=3001 exec rails s
