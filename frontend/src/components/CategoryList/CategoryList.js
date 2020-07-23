@@ -31,7 +31,7 @@ class CategoryList extends React.Component {
   render() {
     const categories = this.state.categories;
     const categoryItems = categories.map((category) => (
-      <Grid item xs={4} key={category.id}>
+      <Grid item xs sm={6} md={4} key={category.id}>
         <CategoryItem category={category} />
       </Grid>
     ));

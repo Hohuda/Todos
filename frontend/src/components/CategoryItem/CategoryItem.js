@@ -7,7 +7,7 @@ import Add from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 
-import TodoList from "../TodoList/TodoList";
+import TodoItem from "../TodoItem/TodoItem";
 
 import "./CategoryItem.css";
 
@@ -17,7 +17,6 @@ class CategoryItem extends React.Component {
     this.state = {
       id: "",
       name: "",
-      todos: [],
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleNameBlur = this.handleNameBlur.bind(this);
@@ -57,8 +56,23 @@ class CategoryItem extends React.Component {
     this.setState((state) => category);
   }
 
+  // handleTodoItemChange(e) {
+  //   let todosTmp = this.state.todos;
+  //   let todo = (todosTmp.find((todo) => todo.id === e.target.id).done =
+  //     e.target.done);
+  //   this.setState({
+  //     todos: todosTmp,
+  //   });
+  // }
+
   render() {
-    const { id, name, todos } = this.state;
+    const { id, name } = this.state;
+
+    const todos = this.props.category.todos;
+
+    const todosItems = todos.map((todo) => (
+      <TodoItem key={todo.id} todo={todo} />
+    ));
 
     return (
       <div>
@@ -80,7 +94,7 @@ class CategoryItem extends React.Component {
             }
           ></CardHeader>
           <CardContent>
-            <TodoList todos={todos} />
+            <div>{todosItems}</div>
           </CardContent>
         </Card>
       </div>

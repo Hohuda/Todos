@@ -27,38 +27,34 @@ class TodoItem extends React.Component {
     this.setState((state) => this.props.todo);
   }
 
+  componentDidUpdate(prevState) {
+    if (this.state.done != prevState.done) this.updateTodoRecordApi();
+  }
+
   handleFormClick(e) {
     this.setState((state) => ({
       done: !state.done,
     }));
     e.stopPropagation();
-    this.updateTodoRecordApi();
   }
 
-  async updateTodoRecordApi() {
+  updateTodoRecordApi() {
     const { title, description, done, id, category_id } = this.state;
     const data = { title, description, done };
     const patch_api_url = `/api/v1/categories/${category_id}/todos/${id}`;
 
-    await fetch(patch_api_url, {
+    fetch(patch_api_url, {
       method: "PATCH",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((result) => this.updateTodoItem(result));
-  }
-
-  updateTodoItem(todo) {
-    this.setState((state) => todo);
+    });
   }
 
   render() {
-    const todo = this.props.todo;
-    const done = this.state.done;
+    const { title, description, done } = this.state;
 
     return (
       <div>
@@ -68,13 +64,13 @@ class TodoItem extends React.Component {
               // onClick={(e) => this.handleFormClick(e)}
               onClick={(e) => this.handleFormClick(e)}
               // onFocus={(event) => event.stopPropagation()}
-              control={<Checkbox checked={this.state.done} />}
-              label={<Typography variant="subtitle1">{todo.title}</Typography>}
+              control={<Checkbox checked={done} />}
+              label={<Typography variant="subtitle1">{title}</Typography>}
             />
           </AccordionSummary>
           <AccordionDetails>
             <div>
-              <Typography variant="subtitle2">{todo.description}</Typography>
+              <Typography variant="subtitle2">{description}</Typography>
             </div>
           </AccordionDetails>
           <Divider />
