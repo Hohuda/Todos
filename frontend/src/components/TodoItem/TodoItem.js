@@ -10,8 +10,6 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import Divider from "@material-ui/core/Divider";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-const origin = "localhost:3001";
-
 class TodoItem extends React.Component {
   constructor(props) {
     super(props);
@@ -42,7 +40,7 @@ class TodoItem extends React.Component {
   async updateTodoRecordApi() {
     const category_id = this.state.category_id;
     const todo_id = this.state.id;
-    const patch_api_url = `http://${origin}/api/v1/categories/${category_id}/todos/${todo_id}`;
+    const patch_api_url = `/api/v1/categories/${category_id}/todos/${todo_id}`;
     const state = this.state;
     const data = {
       todo: {

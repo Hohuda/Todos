@@ -2,8 +2,6 @@ import React from "react";
 import CategoryItem from "../CategoryItem/CategoryItem";
 import { Grid } from "@material-ui/core";
 
-const origin = "localhost:3001";
-
 class CategoryList extends React.Component {
   constructor(props) {
     super(props);
@@ -14,7 +12,7 @@ class CategoryList extends React.Component {
   }
 
   getCategoriesRecordsApi() {
-    const api_url = `http://${origin}/`;
+    const api_url = `/api/v1/categories`;
 
     fetch(api_url)
       .then((response) => response.json())
