@@ -19,8 +19,6 @@ class TodoItem extends React.Component {
       description: "",
       done: false,
       category_id: null,
-      created_at: "",
-      updated_at: "",
     };
     this.handleFormClick = this.handleFormClick.bind(this);
   }
@@ -38,32 +36,23 @@ class TodoItem extends React.Component {
   }
 
   async updateTodoRecordApi() {
-    const category_id = this.state.category_id;
-    const todo_id = this.state.id;
-    const patch_api_url = `/api/v1/categories/${category_id}/todos/${todo_id}`;
-    const state = this.state;
-    const data = {
-      todo: {
-        title: state.title,
-        description: state.description,
-        done: !this.state.done,
-      },
-    };
+    const { title, description, done, id, category_id } = this.state;
+    const data = { title, description, done };
+    const patch_api_url = `/api/v1/categories/${category_id}/todos/${id}`;
 
     await fetch(patch_api_url, {
       method: "PATCH",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: JSON.stringify(data),
     })
       .then((response) => response.json())
-      .then((result) => this.updateItem(result));
+      .then((result) => this.updateTodoItem(result));
   }
 
-  updateItem(todo) {
+  updateTodoItem(todo) {
     this.setState((state) => todo);
   }
 

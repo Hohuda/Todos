@@ -1,0 +1,6 @@
+.category-name {
+  font-size: x-large !important;
+  width: 100% !important;
+  height: auto !important;
+  flex-grow: 1 !important;
+}
