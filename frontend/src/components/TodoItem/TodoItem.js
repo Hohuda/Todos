@@ -28,7 +28,7 @@ class TodoItem extends React.Component {
   }
 
   componentDidUpdate(prevState) {
-    if (this.state.done != prevState.done) this.updateTodoRecordApi();
+    if (this.state.done !== prevState.done) this.updateTodoRecordApi();
   }
 
   handleFormClick(e) {

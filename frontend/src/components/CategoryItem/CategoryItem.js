@@ -17,53 +17,60 @@ class CategoryItem extends React.Component {
     this.state = {
       id: "",
       name: "",
+      default_name: "",
     };
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleNameBlur = this.handleNameBlur.bind(this);
   }
 
   componentDidMount() {
-    this.setState((state) => this.props.category);
+    const category = this.props.category;
+    this.updateCategoryItem(category);
   }
 
   handleNameChange(e) {
     this.setState({
       name: e.target.value,
-      isChanged: true,
     });
   }
 
-  async handleNameBlur(e) {
-    const { id, name, isChanged } = this.state;
-    const patch_cat_url = `/api/v1/categories/${id}`;
+  handleNameBlur(e) {
+    this.setState({
+      name: this.state.default_name,
+    });
+  }
 
-    if (!isChanged) {
-      return;
+  async handleKeyPress(e) {
+    console.log("key pressed", e.key, e.key.keyCode);
+    const value = e.target.value;
+    const { id, name } = this.state;
+    const cat_url = `/api/v1/categories/${id}`;
+
+    if (value) {
+      if (e.key === "Enter") {
+        const result = await fetch(cat_url, {
+          method: "PATCH",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name }),
+        })
+          .then((response) => response.json())
+          .then((category) => this.updateCategoryItem(category));
+        this.refs.input.blur();
+      }
     }
-    await fetch(patch_cat_url, {
-      method: "PATCH",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name }),
-    })
-      .then((response) => response.json())
-      .then((result) => this.updateCategoryItem(result));
   }
 
   updateCategoryItem(category) {
-    this.setState((state) => category);
+    this.setState({
+      id: category.id,
+      name: category.name,
+      default_name: category.name,
+    });
   }
-
-  // handleTodoItemChange(e) {
-  //   let todosTmp = this.state.todos;
-  //   let todo = (todosTmp.find((todo) => todo.id === e.target.id).done =
-  //     e.target.done);
-  //   this.setState({
-  //     todos: todosTmp,
-  //   });
-  // }
 
   render() {
     const { id, name } = this.state;
@@ -82,9 +89,11 @@ class CategoryItem extends React.Component {
               <InputBase
                 className="category-name"
                 value={name}
-                onChange={(e) => this.handleNameChange(e)}
-                onBlur={(e) => this.handleNameBlur(e)}
+                onChange={this.handleNameChange}
+                onBlur={this.handleNameBlur}
+                onKeyPress={this.handleKeyPress}
                 multiline={true}
+                ref="input"
               />
             }
             action={
