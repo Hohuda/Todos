@@ -3,12 +3,13 @@ import React from "react";
 import Acordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import AcordionActions from "@material-ui/core/AccordionActions";
 import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import Divider from "@material-ui/core/Divider";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+
+import { updateTodo } from "../../actions/Actions";
 
 class TodoItem extends React.Component {
   constructor(props) {
@@ -20,37 +21,34 @@ class TodoItem extends React.Component {
       done: false,
       category_id: null,
     };
-    this.handleFormClick = this.handleFormClick.bind(this);
+    this.handleCheck = this.handleCheck.bind(this);
   }
 
   componentDidMount() {
-    this.setState((state) => this.props.todo);
+    const { id, title, description, done, category_id } = this.props.todo;
+    this.setState({
+      id: id,
+      title: title,
+      description: description,
+      done: done,
+      category_id: category_id,
+    });
   }
 
   componentDidUpdate(prevState) {
-    if (this.state.done !== prevState.done) this.updateTodoRecordApi();
+    this.liftStateToReload();
   }
 
-  handleFormClick(e) {
-    this.setState((state) => ({
-      done: !state.done,
-    }));
-    e.stopPropagation();
-  }
-
-  updateTodoRecordApi() {
-    const { title, description, done, id, category_id } = this.state;
-    const data = { title, description, done };
-    const patch_api_url = `/api/v1/categories/${category_id}/todos/${id}`;
-
-    fetch(patch_api_url, {
-      method: "PATCH",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+  handleCheck(e) {
+    this.setState({
+      done: e.target.checked,
     });
+  }
+
+  async liftStateToReload() {
+    const { id, title, description, done, category_id } = this.state;
+    const todo = { id, title, description, done, category_id };
+    await updateTodo(todo).then((todo) => this.props.onChange);
   }
 
   render() {
@@ -61,10 +59,8 @@ class TodoItem extends React.Component {
         <Acordion square={true}>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <FormControlLabel
-              // onClick={(e) => this.handleFormClick(e)}
-              onClick={(e) => this.handleFormClick(e)}
-              // onFocus={(event) => event.stopPropagation()}
-              control={<Checkbox checked={done} />}
+              onClick={(e) => e.stopPropagation()}
+              control={<Checkbox checked={done} onChange={this.handleCheck} />}
               label={<Typography variant="subtitle1">{title}</Typography>}
             />
           </AccordionSummary>

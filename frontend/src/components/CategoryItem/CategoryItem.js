@@ -7,6 +7,7 @@ import Add from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 
+import { updateCategory } from "../../actions/Actions";
 import TodoItem from "../TodoItem/TodoItem";
 
 import "./CategoryItem.css";
@@ -15,18 +16,37 @@ class CategoryItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: "",
+      id: null,
       name: "",
-      default_name: "",
+      defaultName: "",
+      todos: [],
     };
+    this.handleTodoItemChange = this.handleTodoItemChange.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleNameKeyPress = this.handleNameKeyPress.bind(this);
     this.handleNameBlur = this.handleNameBlur.bind(this);
   }
 
   componentDidMount() {
-    const category = this.props.category;
-    this.updateCategoryItem(category);
+    this.getState();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps !== this.props)
+      this.setState({
+        defaultName: this.state.name,
+      });
+  }
+
+  getState() {
+    const { id, name, todos } = this.props.category;
+    this.setState({
+      id: id,
+      name: name,
+      defaultName: name,
+      todos: todos,
+    });
+    this.inputRef = React.createRef();
   }
 
   handleNameChange(e) {
@@ -35,50 +55,43 @@ class CategoryItem extends React.Component {
     });
   }
 
-  handleNameBlur(e) {
-    this.setState({
-      name: this.state.default_name,
-    });
-  }
-
-  async handleKeyPress(e) {
-    console.log("key pressed", e.key, e.key.keyCode);
-    const value = e.target.value;
-    const { id, name } = this.state;
-    const cat_url = `/api/v1/categories/${id}`;
-
-    if (value) {
-      if (e.key === "Enter") {
-        const result = await fetch(cat_url, {
-          method: "PATCH",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name }),
-        })
-          .then((response) => response.json())
-          .then((category) => this.updateCategoryItem(category));
-        this.refs.input.blur();
-      }
+  async handleNameKeyPress(e) {
+    if (e.key === "Enter") {
+      const { id, name } = this.state;
+      const category = { id, name };
+      await updateCategory(category).then((category) =>
+        this.props.onChange(category)
+      );
+      e.preventDefault();
+      this.inputRef.current.blur();
     }
   }
 
-  updateCategoryItem(category) {
+  handleNameBlur(e) {
     this.setState({
-      id: category.id,
-      name: category.name,
-      default_name: category.name,
+      name: this.state.defaultName,
+    });
+  }
+
+  handleTodoItemChange(todo) {
+    let todosTmp = this.state.todos;
+    let index = todosTmp.findIndex((x) => x.id === todo.id);
+    todosTmp[index] = todo;
+    this.setState({
+      todos: todosTmp,
     });
   }
 
   render() {
-    const { id, name } = this.state;
+    const name = this.state.name;
+    const todos = this.state.todos;
 
-    const todos = this.props.category.todos;
-
-    const todosItems = todos.map((todo) => (
-      <TodoItem key={todo.id} todo={todo} />
+    const todoItems = todos.map((todo) => (
+      <TodoItem
+        key={todo.id}
+        todo={todo}
+        onChange={this.handleTodoItemChange}
+      />
     ));
 
     return (
@@ -87,13 +100,13 @@ class CategoryItem extends React.Component {
           <CardHeader
             title={
               <InputBase
+                inputRef={this.inputRef}
                 className="category-name"
                 value={name}
                 onChange={this.handleNameChange}
                 onBlur={this.handleNameBlur}
-                onKeyPress={this.handleKeyPress}
-                multiline={true}
-                ref="input"
+                onKeyDown={this.handleNameKeyPress}
+                multiline={false}
               />
             }
             action={
@@ -103,7 +116,7 @@ class CategoryItem extends React.Component {
             }
           ></CardHeader>
           <CardContent>
-            <div>{todosItems}</div>
+            <div>{todoItems}</div>
           </CardContent>
         </Card>
       </div>

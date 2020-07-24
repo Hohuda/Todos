@@ -33,5 +33,7 @@ export function updateCategory(category) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ name }),
-  });
+  })
+    .then((response) => response.json())
+    .catch((err) => err);
 }

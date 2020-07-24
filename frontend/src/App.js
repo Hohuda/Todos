@@ -1,15 +1,13 @@
 import React from "react";
 
-import Grid from "@material-ui/core/Grid";
-
 import Navbar from "./components/Navbar/Navbar";
-import CategoryList from "./components/CategoryList/CategoryList";
+import MainPage from "./containers/MainPage/MainPage";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <Navbar />
-      <CategoryList />
+      <MainPage />
     </div>
   );
 }
