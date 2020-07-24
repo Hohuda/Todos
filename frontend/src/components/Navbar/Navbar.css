@@ -5,3 +5,8 @@
 .main-div {
   padding-bottom: 24px;
 }
+
+.button-heigh {
+  height: min-content;
+  align-self: center;
+}

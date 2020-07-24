@@ -16,18 +16,19 @@ class Navbar extends React.Component {
         <Appbar position="static">
           <Toolbar>
             <Grid container spacing={3}>
-              <Grid item xs></Grid>
-              <Grid item xs>
+              <Grid item md></Grid>
+              <Grid item xs sm md>
                 <Typography align="center" variant="h4">
                   My todos app
                 </Typography>
               </Grid>
-              <Grid item xs container justify="flex-end">
+              <Grid item xs sm={4} md container justify="flex-end">
                 <Button
                   variant="contained"
                   color="inherit"
                   endIcon={<Add color="primary" />}
                   size="small"
+                  className="button-heigh"
                 >
                   <Typography variant="caption" color="primary">
                     New category

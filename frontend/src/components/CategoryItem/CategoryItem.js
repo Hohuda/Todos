@@ -57,12 +57,12 @@ class CategoryItem extends React.Component {
 
   async handleNameKeyPress(e) {
     if (e.key === "Enter") {
+      e.preventDefault();
       const { id, name } = this.state;
       const category = { id, name };
       await updateCategory(category).then((category) =>
         this.props.onChange(category)
       );
-      e.preventDefault();
       this.inputRef.current.blur();
     }
   }
@@ -106,7 +106,7 @@ class CategoryItem extends React.Component {
                 onChange={this.handleNameChange}
                 onBlur={this.handleNameBlur}
                 onKeyDown={this.handleNameKeyPress}
-                multiline={false}
+                multiline={true}
               />
             }
             action={

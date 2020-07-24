@@ -1,5 +1,7 @@
 import React from "react";
 
+import Grid from "@material-ui/core/Grid";
+
 import { fetchCategories } from "../../actions/Actions";
 import CategoryItem from "../../components/CategoryItem/CategoryItem";
 
@@ -36,14 +38,21 @@ class CategoryList extends React.Component {
   render() {
     const categories = this.state.categories;
     const categoryItems = categories.map((category) => (
-      <CategoryItem
-        key={category.id}
-        category={category}
-        onChange={this.handleCategoryItemChange}
-      />
+      <Grid item xs sm={6} md={4} key={category.id}>
+        <CategoryItem
+          category={category}
+          onChange={this.handleCategoryItemChange}
+        />
+      </Grid>
     ));
 
-    return <div>{categoryItems}</div>;
+    return (
+      <div>
+        <Grid container spacing={3}>
+          {categoryItems}
+        </Grid>
+      </div>
+    );
   }
 }
 
